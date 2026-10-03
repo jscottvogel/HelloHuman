@@ -1,0 +1,4 @@
+# HelloHuman Dependencies
+# OpenCV with DNN support (YuNet & SFace)
+opencv-python>=4.8.0
+numpy>=1.20.0
