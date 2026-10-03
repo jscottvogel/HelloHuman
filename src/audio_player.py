@@ -33,9 +33,11 @@ class AudioPlayer:
         self.is_windows = sys.platform == "win32"
         self.linux_player = None
         if not self.is_windows:
+            # Prioritize modern PipeWire / PulseAudio players over legacy raw ALSA
             self.linux_player = (
-                shutil.which("aplay")
+                shutil.which("pw-play")
                 or shutil.which("paplay")
+                or shutil.which("aplay")
                 or shutil.which("play")
             )
 
@@ -105,9 +107,18 @@ class AudioPlayer:
                             pass
 
                     cmd = [self.linux_player]
-                    if self.device and "aplay" in self.linux_player:
-                        cmd.extend(["-D", self.device])
-                    cmd.extend(["-q", str(file_path)])
+                    player_name = Path(self.linux_player).name
+
+                    if player_name == "aplay":
+                        if self.device:
+                            cmd.extend(["-D", self.device])
+                        cmd.append("-q")
+                    elif player_name == "paplay" and self.device:
+                        cmd.extend(["-d", self.device])
+                    elif player_name == "pw-play" and self.device:
+                        cmd.extend(["--target", self.device])
+
+                    cmd.append(str(file_path))
 
                     self._process = subprocess.Popen(
                         cmd,
@@ -116,7 +127,7 @@ class AudioPlayer:
                     )
                     return True
                 else:
-                    print(f"[AudioPlayer] Warning: No audio player (aplay/paplay) found on Linux.")
+                    print(f"[AudioPlayer] Warning: No audio player (pw-play/paplay/aplay) found on Linux.")
                     return False
         except Exception as e:
             print(f"[AudioPlayer] Error playing audio: {e}")

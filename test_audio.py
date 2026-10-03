@@ -96,6 +96,23 @@ def check_audio_subsystem():
     print("  AUDIO PLAYBACK TESTS")
     print("=" * 60)
 
+    # Test 0: PipeWire / PulseAudio playback
+    if shutil.which("pw-play"):
+        print("\n0a. Testing PipeWire output ('pw-play audio/hello_human.wav')...")
+        out, err, code = run_cmd(["pw-play", str(test_wav)])
+        if code == 0:
+            print("   Command succeeded! (PipeWire audio played)")
+        else:
+            print(f"   pw-play failed: {err}")
+
+    if shutil.which("paplay"):
+        print("\n0b. Testing PulseAudio/PipeWire output ('paplay audio/hello_human.wav')...")
+        out, err, code = run_cmd(["paplay", str(test_wav)])
+        if code == 0:
+            print("   Command succeeded! (PulseAudio audio played)")
+        else:
+            print(f"   paplay failed: {err}")
+
     # Test 1: Default ALSA playback
     print("\n1. Testing Default ALSA output ('aplay audio/hello_human.wav')...")
     out, err, code = run_cmd(["aplay", str(test_wav)])
