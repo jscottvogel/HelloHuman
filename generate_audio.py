@@ -21,7 +21,6 @@ GREETINGS = [
     ("beep_boop.wav", "Beep boop! Human detected. Hello there!"),
     ("welcome_human.wav", "Ah, a human in my visual sensor! Welcome!"),
     ("nice_face.wav", "I see you, human. That is a very nice face you have there."),
-    ("live_long_and_prosper.wav", "Live long and prosper."),
 ]
 
 
