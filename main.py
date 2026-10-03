@@ -57,6 +57,12 @@ def parse_args():
         help="Mute audio greetings",
     )
     parser.add_argument(
+        "--audio-device",
+        type=str,
+        default=None,
+        help="ALSA audio playback device on Linux/Pi (e.g. 'plughw:0,0' or 'plughw:1,0')",
+    )
+    parser.add_argument(
         "--fullscreen",
         action="store_true",
         help="Start in fullscreen mode",
@@ -84,7 +90,7 @@ def main():
     face_engine.load_known_faces(KNOWN_FACES_DIR)
 
     print(f"\n[3/4] Initializing Audio Player from {AUDIO_DIR}...")
-    audio_player = AudioPlayer(AUDIO_DIR)
+    audio_player = AudioPlayer(AUDIO_DIR, device=args.audio_device)
     playlist = audio_player.refresh_playlist()
     print(f"      Found {len(playlist)} WAV greeting files in rotation.")
 

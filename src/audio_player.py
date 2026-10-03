@@ -13,9 +13,15 @@ from typing import List, Optional
 
 
 class AudioPlayer:
-    def __init__(self, audio_dir: Path, min_playback_gap: float = 2.0):
+    def __init__(
+        self,
+        audio_dir: Path,
+        min_playback_gap: float = 2.0,
+        device: Optional[str] = None,
+    ):
         self.audio_dir = Path(audio_dir)
         self.min_playback_gap = min_playback_gap
+        self.device = device or os.environ.get("AUDIO_DEVICE", None)
         self.last_played_time = 0.0
         self.last_played_file: Optional[Path] = None
         self._playlist: List[Path] = []
@@ -97,10 +103,16 @@ class AudioPlayer:
                             self._process.terminate()
                         except Exception:
                             pass
+
+                    cmd = [self.linux_player]
+                    if self.device and "aplay" in self.linux_player:
+                        cmd.extend(["-D", self.device])
+                    cmd.extend(["-q", str(file_path)])
+
                     self._process = subprocess.Popen(
-                        [self.linux_player, "-q", str(file_path)],
+                        cmd,
                         stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL,
+                        stderr=subprocess.PIPE,
                     )
                     return True
                 else:
