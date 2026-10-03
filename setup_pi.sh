@@ -13,6 +13,8 @@ sudo apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
+    python3-opencv \
+    python3-numpy \
     alsa-utils \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -25,10 +27,14 @@ if [ ! -d "venv" ]; then
 fi
 source venv/bin/activate
 
-# 3. Install Python requirements
-echo "[3/4] Installing Python requirements..."
-pip install --upgrade pip
-pip install -r requirements.txt
+# 3. Verify OpenCV & Python environment
+echo "[3/4] Verifying Python environment and OpenCV..."
+if ! python3 -c "import cv2" &> /dev/null; then
+    echo "  cv2 not detected in virtualenv, installing opencv-python-headless..."
+    pip install --upgrade pip
+    pip install opencv-python-headless || pip install opencv-python
+fi
+python3 -c "import cv2; print('  OpenCV loaded successfully:', cv2.__version__)"
 
 # 4. Download models & generate audio
 echo "[4/4] Ensuring models and audio files..."
