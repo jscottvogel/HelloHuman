@@ -33,7 +33,8 @@ HelloHuman/
 │   ├── carbon_lifeform.wav
 │   ├── beep_boop.wav
 │   ├── welcome_human.wav
-│   └── nice_face.wav
+│   ├── nice_face.wav
+│   └── live_long_and_prosper.wav
 ├── models/                   # Deep learning ONNX models (auto-downloaded)
 │   ├── face_detection_yunet_2023mar.onnx
 │   └── face_recognition_sface_2021dec.onnx
